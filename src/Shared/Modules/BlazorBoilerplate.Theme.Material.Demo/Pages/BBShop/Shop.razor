@@ -1,30 +1,14 @@
 ﻿@page "/shop"
 
 @inject IShopClient shopClient
-@inject IViewNotifier viewNotifier
 @inject IStringLocalizer<Global> L
-
-
-<style>
-    .product-card {
-        max-width: 300px;
-        height: 450px
-    }
-
-    .product-card-content {
-        padding: 2.0rem;
-    }
-
-    .product-card-clean-margin {
-        margin: 0px;
-    }
-</style>
 
 
 <TopSection>
     <Breadcrumbs>
         <Breadcrumb Title="Your Shop" />
     </Breadcrumbs>
+   
 </TopSection>
 
 
@@ -32,7 +16,7 @@
 <div class="mat-layout-grid">
     <div class="mat-layout-grid-inner">
         <div class="mat-layout-grid-cell mat-layout-grid-cell-span-2">
-            <div class="mat-elevation-z8" style="padding: 0.5em">
+            <div class="mat-elevation-z8 p-2">
                 <MatNavMenu>
 
                     @foreach (var category in categories)
@@ -45,11 +29,11 @@
             </div>
         </div>
         <div class="mat-layout-grid-cell mat-layout-grid-cell-span-8">
-            <div class="mat-elevation-z8" style="padding: 0.5em">
+            <div class="mat-elevation-z8 p-2">
                 <div class="mat-layout-grid mat-layout-grid-align-left">
                     <div class="mat-layout-grid-inner">
 
-                        <!-- product -->
+                        <!-- products -->
                         @foreach (var product in products)
                         {
                             <div class="mat-layout-grid-cell">
@@ -65,7 +49,7 @@
 
                                             </MatSubtitle2>
                                             @*<MatSubtitle2 class="product-card-clean-margin">
-                                                    Shop: lazarus
+                                                Shop: lazarus
                                                 </MatSubtitle2>*@
                                         </div>
 
@@ -93,18 +77,18 @@
 
             </div>
             <div class="my-2" />
-            <div class="mat-elevation-z8" style="padding: 0.5em">
+            <div class="mat-elevation-z8 p-2">
                 <MatPaginator Length="100" PageSize="@pageSize" Page="@OnPage"></MatPaginator>
             </div>
         </div>
         <div class="mat-layout-grid-cell mat-layout-grid-cell-span-2">
-            <div class="mat-elevation-z1" style="padding: 0.5em">
+            <div class="mat-elevation-z1 p-3">
                 <div class="cart-block">
-                    <div class="contentbox-header">
+                    <div>
                         <h4>CART SUMMARY</h4>
-                    </div>                            
-                    <div class="contentbox-body">
-                        <div >
+                    </div>
+                    <div>
+                        <div>
                             <div>
                                 <div>
                                     <span>Subtotal</span>

@@ -1,0 +1,20 @@
+﻿
+
+
+<MatButton Raised="true" 
+           Icon="shopping_cart" 
+           Attributes="@Attributes" 
+           Link="@Link">
+    <span>Cart</span>
+    <span class="badge badge-pill badge-light">@productCount</span>
+</MatButton>
+
+@code {
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, object> Attributes { get; set; }
+
+    [Parameter]
+    public string Link { get; set; }
+
+    const int productCount = 5; /* todo: will be get from blazorhub*/
+}

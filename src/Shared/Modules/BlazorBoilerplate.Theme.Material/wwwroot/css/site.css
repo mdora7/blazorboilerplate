@@ -781,3 +781,17 @@ div.refresh-timer-interval-wrapper {
         transform: translateX(0%);
     }
 }
+
+
+.product-card {
+    max-width: 300px;
+    height: 450px
+}
+
+.product-card-content {
+    padding: 2.0rem;
+}
+
+.product-card-clean-margin {
+    margin: 0px;
+}
