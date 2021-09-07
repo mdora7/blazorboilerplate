@@ -25,11 +25,8 @@ namespace BlazorBoilerplate.Storage
         public DbSet<UserProfile> UserProfiles { get; set; }
         public DbSet<QueuedEmail> QueuedEmails { get; set; }
         public DbSet<Todo> Todos { get; set; }
-
         public DbSet<Categories> Categories { get; set; }
-
         public DbSet<Product> Products { get; set; }
-
         public DbSet<Message> Messages { get; set; }
         private IUserSession UserSession { get; set; }
         public DbSet<DbLog> Logs { get; set; }
@@ -90,7 +87,7 @@ namespace BlazorBoilerplate.Storage
             modelBuilder.Entity<Categories>().ToTable("Categories");
             modelBuilder.Entity<Product>(b =>
             {
-                b.Property(b => b.Image).HasDefaultValue("https://via.placeholder.com/300x300");
+                b.Property(b => b.Image).HasDefaultValue(Constants.ShopConsts.NoProfilePicture);
                 b.ToTable("Products");
             });
 
