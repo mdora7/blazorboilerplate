@@ -45,7 +45,5 @@ namespace BlazorBoilerplate.Shared.Services.BBShop
                                             , parameters: null);
         }
         #endregion
-
-
     }
 }

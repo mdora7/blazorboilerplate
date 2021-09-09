@@ -18,9 +18,12 @@ using System.Threading.Tasks;
 namespace BlazorBoilerplate.Server.Controllers
 {
     [Route("api/shop/[action]")]
+    [Authorize(AuthenticationSchemes = AuthSchemes)]
     [BreezeQueryFilter]
     public class ShopController : Controller
-    { //Cookie + Token authentication
+    {
+        private const string AuthSchemes =
+        "Identity.Application" + "," + IdentityServerAuthenticationDefaults.AuthenticationScheme; //Cookie + Token authentication
 
         private readonly ApplicationPersistenceManager persistenceManager;
         public ShopController(ApplicationPersistenceManager persistenceManager)

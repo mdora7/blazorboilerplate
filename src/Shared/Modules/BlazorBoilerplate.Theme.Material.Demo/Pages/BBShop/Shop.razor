@@ -2,13 +2,13 @@
 
 @inject IShopClient shopClient
 @inject IStringLocalizer<Global> L
+@inject NavigationManager navigationManager
 
 
 <TopSection>
     <Breadcrumbs>
         <Breadcrumb Title="Your Shop" />
     </Breadcrumbs>
-   
 </TopSection>
 
 
@@ -38,7 +38,7 @@
                         {
                             <div class="mat-layout-grid-cell">
                                 <MatCard class="product-card">
-                                    <MatCardContent>
+                                    <MatCardContent >
                                         <MatCardMedia Wide="true" ImageUrl="@product.Image"></MatCardMedia>
                                         <div class="product-card-content">
                                             <MatHeadline6 class="product-card-clean-margin">
@@ -61,7 +61,7 @@
                                     </MatCardContent>
                                     <MatCardActions>
                                         <MatCardActionButtons>
-                                            <MatIconButton Icon="visibility"></MatIconButton>
+                                            <MatIconButton Icon="visibility" OnClick="@(async e=> await ShowProductDetail(e, product))"></MatIconButton>
                                             <MatIconButton Icon="add_shopping_cart" ToggleIcon="remove_shopping_cart" @bind-Toggled="@cardToggled">
                                             </MatIconButton>
                                         </MatCardActionButtons>
@@ -168,6 +168,12 @@
         var result = await shopClient.LoadProducts();
         products = new List<Product>(result);
         //StateHasChanged();
+    }
+
+
+    async Task ShowProductDetail(MouseEventArgs e, Product product)
+    {
+        navigationManager.NavigateTo($"{navigationManager.BaseUri}cartdetail/{product.Id}", true);
     }
 
 }
