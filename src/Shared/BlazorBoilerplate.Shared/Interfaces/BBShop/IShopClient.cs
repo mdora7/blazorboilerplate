@@ -12,6 +12,8 @@ namespace BlazorBoilerplate.Shared.Interfaces.BBShop
     {
         Task<Breeze.Sharp.QueryResult<Categories>> LoadCategories(int? take = null, int? skip = null);
 
-        Task<Breeze.Sharp.QueryResult<Product>> LoadProducts(int? take = null, int? skip = null);
+        Task<Breeze.Sharp.QueryResult<Product>> LoadProducts(Dictionary<string, object> parameters=null
+                                                                        , int? take = null
+                                                                        , int? skip = null);
     }
 }

@@ -16,8 +16,8 @@ Get-Help about_EntityFrameworkCore
 /* whatif shows db to drop but don't remove */
 Drop-Database -context ApplicationDbContext -whatif
 
-add-migration CreateLocalizationDb -context ApplicationDbContext -outputdir "Migrations/ApplicationDb"
-add-migration CreateApplicationDb -context LocalizationDbContext -outputdir "Migrations/ApplicationDb"
+add-migration CreateApplicationDb -context ApplicationDbContext -outputdir "Migrations/ApplicationDb"
+add-migration CreateLocalizationDb -context LocalizationDbContext -outputdir "Migrations/ApplicationDb"
 add-migration CreateTenantStoreDb -context TenantStoreDbContext -outputdir "Migrations/ApplicationDb"
 add-migration CreatePersistedGrantDb -context PersistedGrantDbContext -outputdir "Migrations/ApplicationDb"
 add-migration CreateConfigurationDb -context ConfigurationDbContext -outputdir "Migrations/ApplicationDb"

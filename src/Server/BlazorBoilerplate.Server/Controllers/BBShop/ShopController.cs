@@ -51,12 +51,13 @@ namespace BlazorBoilerplate.Server.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        public IQueryable<Product> Products()
+        public IQueryable<Product> Products(int id)
         {
             return persistenceManager.GetEntities<Product>()
                                      .Include(i => i.CreatedBy)
                                      .Include(i => i.ModifiedBy)
-                                    .OrderByDescending(i => i.Title);
+                                     .Where(t=> id > 0 ? t.Id == id : true)
+                                     .OrderByDescending(i => i.Title);
         }
 
         [AllowAnonymous]

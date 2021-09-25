@@ -25,5 +25,7 @@ namespace BlazorBoilerplate.Infrastructure.Storage.DataModels
         public long CategoryId { get; set; }
 
         public long ViewCount { get; set; }
+
+        public virtual ICollection<ProductVariant> Variants { get; set; }
     }
 }

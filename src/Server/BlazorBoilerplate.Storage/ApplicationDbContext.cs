@@ -25,8 +25,13 @@ namespace BlazorBoilerplate.Storage
         public DbSet<UserProfile> UserProfiles { get; set; }
         public DbSet<QueuedEmail> QueuedEmails { get; set; }
         public DbSet<Todo> Todos { get; set; }
+
         public DbSet<Categories> Categories { get; set; }
         public DbSet<Product> Products { get; set; }
+        public DbSet<ProductVariant> ProductVariants { get; set; }
+        public DbSet<ProductEdition> ProductEditions { get; set; }
+        public DbSet<ProductStats> ProductStats { get; set; }
+
         public DbSet<Message> Messages { get; set; }
         private IUserSession UserSession { get; set; }
         public DbSet<DbLog> Logs { get; set; }
@@ -84,12 +89,20 @@ namespace BlazorBoilerplate.Storage
             modelBuilder.Entity<Message>().ToTable("Messages");
 
 
+            //bbshop
             modelBuilder.Entity<Categories>().ToTable("Categories");
             modelBuilder.Entity<Product>(b =>
             {
                 b.Property(b => b.Image).HasDefaultValue(Constants.ShopConsts.NoProfilePicture);
+                b.HasMany(b => b.Variants)
+                    .WithOne(e => e.Product)
+                    .HasForeignKey(f => f.ProductId)
+                    .IsRequired();
                 b.ToTable("Products");
             });
+            modelBuilder.Entity<ProductVariant>().ToTable("ProductVariants").HasKey(t=> new { t.ProductId, t.EditionId });
+            modelBuilder.Entity<ProductEdition>().ToTable("ProductEditions");
+
 
 
             modelBuilder.ApplyConfiguration(new MessageConfiguration());

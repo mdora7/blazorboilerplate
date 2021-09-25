@@ -97,169 +97,289 @@ namespace BlazorBoilerplate.Storage
 
         private async Task SeedDemoDataAsync()
         {
-            if ((await _userManager.FindByNameAsync(DefaultUserNames.User)) == null)
+            using (var transaction = _context.Database.BeginTransaction())
             {
-                await CreateUserAsync(DefaultUserNames.User, "user123", "User", "Blazor", "user@blazorboilerplate.com", "+1 (123) 456-7890", null);
-            }
-
-            if (_tenantStoreDbContext.TenantInfo.Count() < 2)
-            {
-                _tenantStoreDbContext.TenantInfo.Add(new TenantInfo() { Id = "tenant1", Identifier = "tenant1.local", Name = "Microsoft Inc." });
-                _tenantStoreDbContext.TenantInfo.Add(new TenantInfo() { Id = "tenant2", Identifier = "tenant2.local", Name = "Contoso Corp." });
-
-                _tenantStoreDbContext.SaveChanges();
-            }
-
-            ApplicationUser user = await _userManager.FindByNameAsync(DefaultUserNames.User);
-
-            if (!_context.UserProfiles.Any())
-                _context.UserProfiles.Add(new UserProfile
+                if ((await _userManager.FindByNameAsync(DefaultUserNames.User)) == null)
                 {
-                    UserId = user.Id,
-                    ApplicationUser = user,
-                    Count = 2,
-                    IsNavOpen = true,
-                    LastPageVisited = "/dashboard",
-                    IsNavMinified = false,
-                    LastUpdatedDate = DateTime.Now
-                });
-
-            if (!_context.Todos.Any())
-            {
-                var rnd = new Random();
-
-                var fruits = new string[] { "apples", "pears", "peaches", "oranges" };
-
-                var users = _context.Users.ToArray();
-
-                for (int i = 0; i < 1000; i++)
-                    _context.Todos.Add(
-                            new Todo
-                            {
-                                IsCompleted = false,
-                                Title = $"Buy {rnd.Next(2, 5)} {fruits[rnd.Next(fruits.Length)]}",
-                                CreatedById = users[rnd.Next(users.Length)].Id
-                            }
-                    );
-            }
-
-            if (!_context.ApiLogs.Any())
-            {
-                _context.ApiLogs.AddRange(
-                new ApiLogItem
-                {
-                    RequestTime = DateTime.Now,
-                    ResponseMillis = 30,
-                    StatusCode = 200,
-                    Method = "Get",
-                    Path = "/api/seed",
-                    QueryString = "",
-                    RequestBody = "",
-                    ResponseBody = "",
-                    IPAddress = "::1",
-                    ApplicationUserId = user.Id
-                },
-                new ApiLogItem
-                {
-                    RequestTime = DateTime.Now,
-                    ResponseMillis = 30,
-                    StatusCode = 200,
-                    Method = "Get",
-                    Path = "/api/seed",
-                    QueryString = "",
-                    RequestBody = "",
-                    ResponseBody = "",
-                    IPAddress = "::1",
-                    ApplicationUserId = user.Id
+                    await CreateUserAsync(DefaultUserNames.User, "user123", "User", "Blazor", "user@blazorboilerplate.com", "+1 (123) 456-7890", null);
                 }
-            );
-            }
 
-            #region BB shopping
-            //add category for shopping
-            if (!_context.Categories.Any())
-            {
-                _context.Categories.AddRange(
-                    new Categories
+                if (_tenantStoreDbContext.TenantInfo.Count() < 2)
+                {
+                    _tenantStoreDbContext.TenantInfo.Add(new TenantInfo() { Id = "tenant1", Identifier = "tenant1.local", Name = "Microsoft Inc." });
+                    _tenantStoreDbContext.TenantInfo.Add(new TenantInfo() { Id = "tenant2", Identifier = "tenant2.local", Name = "Contoso Corp." });
+
+                    _tenantStoreDbContext.SaveChanges();
+                }
+
+                ApplicationUser user = await _userManager.FindByNameAsync(DefaultUserNames.User);
+
+                if (!_context.UserProfiles.Any())
+                    _context.UserProfiles.Add(new UserProfile
                     {
-                        Name = "Furniture",
-                        Icon = "weekend",
-                        Url = "/shop/categories/furniture",
-                        CreatedById = user.Id,
-                        CreatedOn = DateTime.Now
+                        UserId = user.Id,
+                        ApplicationUser = user,
+                        Count = 2,
+                        IsNavOpen = true,
+                        LastPageVisited = "/dashboard",
+                        IsNavMinified = false,
+                        LastUpdatedDate = DateTime.Now
+                    });
+
+                if (!_context.Todos.Any())
+                {
+                    var rnd = new Random();
+
+                    var fruits = new string[] { "apples", "pears", "peaches", "oranges" };
+
+                    var users = _context.Users.ToArray();
+
+                    for (int i = 0; i < 1000; i++)
+                        _context.Todos.Add(
+                                new Todo
+                                {
+                                    IsCompleted = false,
+                                    Title = $"Buy {rnd.Next(2, 5)} {fruits[rnd.Next(fruits.Length)]}",
+                                    CreatedById = users[rnd.Next(users.Length)].Id
+                                }
+                        );
+                }
+
+                if (!_context.ApiLogs.Any())
+                {
+                    _context.ApiLogs.AddRange(
+                    new ApiLogItem
+                    {
+                        RequestTime = DateTime.Now,
+                        ResponseMillis = 30,
+                        StatusCode = 200,
+                        Method = "Get",
+                        Path = "/api/seed",
+                        QueryString = "",
+                        RequestBody = "",
+                        ResponseBody = "",
+                        IPAddress = "::1",
+                        ApplicationUserId = user.Id
                     },
-                    new Categories
+                    new ApiLogItem
                     {
-                        Name = "Fun",
-                        Icon = "extension",
-                        Url = "/shop/categories/fun",
-                        CreatedById = user.Id,
-                        CreatedOn = DateTime.Now
-                    },
-                    new Categories
-                    {
-                        Name = "Kitchen",
-                        Icon = "kitchen",
-                        Url = "/shop/categories/kitchen",
-                        CreatedById = user.Id,
-                        CreatedOn = DateTime.Now
+                        RequestTime = DateTime.Now,
+                        ResponseMillis = 30,
+                        StatusCode = 200,
+                        Method = "Get",
+                        Path = "/api/seed",
+                        QueryString = "",
+                        RequestBody = "",
+                        ResponseBody = "",
+                        IPAddress = "::1",
+                        ApplicationUserId = user.Id
                     }
                 );
+                }
+
+                #region BB shopping
+                //add category for shopping
+                if (!_context.Categories.Any())
+                {
+                    _context.Categories.AddRange(
+                        new Categories
+                        {
+                            Name = "Furniture",
+                            Icon = "weekend",
+                            Url = "/shop/categories/furniture",
+                            CreatedById = user.Id,
+                            CreatedOn = DateTime.Now
+                        },
+                        new Categories
+                        {
+                            Name = "Fun",
+                            Icon = "extension",
+                            Url = "/shop/categories/fun",
+                            CreatedById = user.Id,
+                            CreatedOn = DateTime.Now
+                        },
+                        new Categories
+                        {
+                            Name = "Kitchen",
+                            Icon = "kitchen",
+                            Url = "/shop/categories/kitchen",
+                            CreatedById = user.Id,
+                            CreatedOn = DateTime.Now
+                        }
+                    );
+                }
+
+
+                //add products for shopping
+                if (!_context.Products.Any())
+                {
+                    _context.Products.AddRange(
+                        new Product
+                        {
+                            Title = "The Hitchhiker's Guide to the Galaxy",
+                            Description = "The Hitchhiker's Guide to the Galaxy (sometimes referred to as HG2G, HHGTTG, H2G2, or tHGttG) is a comedy science fiction series created by Douglas Adams.",
+                            Image = "https://upload.wikimedia.org/wikipedia/en/b/bd/H2G2_UK_front_cover.jpg",
+                            ViewCount = 0
+                        },
+                        new Product
+                        {
+                            Title = "Ready Player One",
+                            Description = "Ready Player One is a 2011 science fiction novel, and the debut novel of American author Ernest Cline. The story, set in a dystopia in 2045, follows protagonist Wade Watts on his search for an Easter egg in a worldwide virtual reality game, the discovery of which would lead him to inherit the game creator's fortune.",
+                            Image = "https://upload.wikimedia.org/wikipedia/en/a/a4/Ready_Player_One_cover.jpg",
+                            ViewCount = 0
+                        },
+                         new Product
+                         {
+                             Title = "Nineteen Eighty-Four",
+                             Description = "Nineteen Eighty-Four: A Novel, often published as 1984, is a dystopian social science fiction novel by English novelist George Orwell. It was published on 8 June 1949 by Secker & Warburg as Orwell's ninth and final book completed in his lifetime.",
+                             Image = "https://upload.wikimedia.org/wikipedia/commons/c/c3/1984first.jpg",
+                             ViewCount = 0
+                         },
+                         new Product
+                         {
+                             Title = "Pentax Spotmatic",
+                             Description = "The Pentax Spotmatic refers to a family of 35mm single-lens reflex cameras manufactured by the Asahi Optical Co. Ltd., later known as Pentax Corporation, between 1964 and 1976.",
+                             Image = "https://upload.wikimedia.org/wikipedia/commons/e/e9/Honeywell-Pentax-Spotmatic.jpg",
+                             ViewCount = 0
+                         },
+                         new Product
+                         {
+                             Title = "Xbox",
+                             Description = "The Xbox is a home video game console and the first installment in the Xbox series of video game consoles manufactured by Microsoft.",
+                             Image = "https://upload.wikimedia.org/wikipedia/commons/4/43/Xbox-console.jpg",
+                             ViewCount = 0
+                         },
+                          new Product
+                          {
+                              Title = "Super Nintendo Entertainment System",
+                              Description = "The Super Nintendo Entertainment System (SNES), also known as the Super NES or Super Nintendo, is a 16-bit home video game console developed by Nintendo that was released in 1990 in Japan and South Korea.",
+                              Image = "https://upload.wikimedia.org/wikipedia/commons/e/ee/Nintendo-Super-Famicom-Set-FL.jpg",
+                              ViewCount = 0
+                          }
+                    );
+                }
+
+                //add product variants for shopping
+                if (!_context.ProductVariants.Any())
+                {
+
+                    _context.ProductVariants.AddRange(
+                     new ProductVariant
+                     {
+                         ProductId = 1,
+                         EditionId = 2,
+                         Price = 9.99m,
+                         OriginalPrice = 19.99m
+                     },
+                     new ProductVariant
+                     {
+                         ProductId = 1,
+                         EditionId = 3,
+                         Price = 7.99m
+                     },
+                     new ProductVariant
+                     {
+                         ProductId = 1,
+                         EditionId = 4,
+                         Price = 19.99m,
+                         OriginalPrice = 29.99m
+                     },
+                     new ProductVariant
+                     {
+                         ProductId = 2,
+                         EditionId = 2,
+                         Price = 7.99m,
+                         OriginalPrice = 14.99m
+                     },
+                     new ProductVariant
+                     {
+                         ProductId = 3,
+                         EditionId = 2,
+                         Price = 6.99m
+                     },
+                     new ProductVariant
+                     {
+                         ProductId = 4,
+                         EditionId = 1,
+                         Price = 166.66m,
+                         OriginalPrice = 249.00m
+                     },
+                     new ProductVariant
+                     {
+                         ProductId = 5,
+                         EditionId = 1,
+                         Price = 159.99m,
+                         OriginalPrice = 299m
+                     },
+                     new ProductVariant
+                     {
+                         ProductId = 6,
+                         EditionId = 1,
+                         Price = 73.74m,
+                         OriginalPrice = 400m
+                     },
+                     new ProductVariant
+                     {
+                         ProductId = 7,
+                         EditionId = 5,
+                         Price = 19.99m,
+                         OriginalPrice = 29.99m
+                     },
+                     new ProductVariant
+                     {
+                         ProductId = 7,
+                         EditionId = 6,
+                         Price = 69.99m
+                     },
+                     new ProductVariant
+                     {
+                         ProductId = 7,
+                         EditionId = 7,
+                         Price = 49.99m,
+                         OriginalPrice = 59.99m
+                     },
+                     new ProductVariant
+                     {
+                         ProductId = 8,
+                         EditionId = 5,
+                         Price = 9.99m,
+                         OriginalPrice = 24.99m,
+                     },
+                     new ProductVariant
+                     {
+                         ProductId = 9,
+                         EditionId = 5,
+                         Price = 14.99m
+                     }
+                 );
+
+                }
+
+                //add product editions for shopping
+                if (!_context.ProductEditions.Any())
+                {
+                    _context.ProductEditions.AddRange(
+                        new ProductEdition { Id = 1, Name = "Default" },
+                        new ProductEdition { Id = 2, Name = "Paperback" },
+                        new ProductEdition { Id = 3, Name = "E-Book" },
+                        new ProductEdition { Id = 4, Name = "Audiobook" },
+                        new ProductEdition { Id = 5, Name = "PC" },
+                        new ProductEdition { Id = 6, Name = "PlayStation" },
+                        new ProductEdition { Id = 7, Name = "Xbox" }
+                    );
+                }
+                #endregion
+
+                //if you need to have an identity insert
+                _context.Database.ExecuteSqlInterpolated($"SET IDENTITY_INSERT ProductEditions ON;");
+
+
+                _context.SaveChanges();
+
+
+                _context.Database.ExecuteSqlInterpolated($"SET IDENTITY_INSERT ProductEditions OFF;");
+                transaction.Commit();
             }
-
-
-            //add category for shopping
-            if (!_context.Products.Any())
-            {
-                _context.Products.AddRange(
-                    new Product
-                    {
-                       Title = "The Hitchhiker's Guide to the Galaxy",
-                       Description  = "The Hitchhiker's Guide to the Galaxy (sometimes referred to as HG2G, HHGTTG, H2G2, or tHGttG) is a comedy science fiction series created by Douglas Adams.",
-                       Image= "https://upload.wikimedia.org/wikipedia/en/b/bd/H2G2_UK_front_cover.jpg",
-                       ViewCount = 0
-                    },
-                    new Product
-                    {
-                        Title = "Ready Player One",
-                        Description = "Ready Player One is a 2011 science fiction novel, and the debut novel of American author Ernest Cline. The story, set in a dystopia in 2045, follows protagonist Wade Watts on his search for an Easter egg in a worldwide virtual reality game, the discovery of which would lead him to inherit the game creator's fortune.",
-                        Image = "https://upload.wikimedia.org/wikipedia/en/a/a4/Ready_Player_One_cover.jpg",
-                        ViewCount = 0
-                    },
-                     new Product
-                     {
-                         Title = "Nineteen Eighty-Four",
-                         Description = "Nineteen Eighty-Four: A Novel, often published as 1984, is a dystopian social science fiction novel by English novelist George Orwell. It was published on 8 June 1949 by Secker & Warburg as Orwell's ninth and final book completed in his lifetime.",
-                         Image = "https://upload.wikimedia.org/wikipedia/commons/c/c3/1984first.jpg",
-                         ViewCount = 0
-                     },
-                     new Product
-                     {
-                         Title = "Pentax Spotmatic",
-                         Description = "The Pentax Spotmatic refers to a family of 35mm single-lens reflex cameras manufactured by the Asahi Optical Co. Ltd., later known as Pentax Corporation, between 1964 and 1976.",
-                         Image = "https://upload.wikimedia.org/wikipedia/commons/e/e9/Honeywell-Pentax-Spotmatic.jpg",
-                         ViewCount = 0
-                     },
-                     new Product
-                     {
-                         Title = "Xbox",
-                         Description = "The Xbox is a home video game console and the first installment in the Xbox series of video game consoles manufactured by Microsoft.",
-                         Image = "https://upload.wikimedia.org/wikipedia/commons/4/43/Xbox-console.jpg",
-                         ViewCount = 0
-                     },
-                      new Product
-                      {
-                          Title = "Super Nintendo Entertainment System",
-                          Description = "The Super Nintendo Entertainment System (SNES), also known as the Super NES or Super Nintendo, is a 16-bit home video game console developed by Nintendo that was released in 1990 in Japan and South Korea.",
-                          Image = "https://upload.wikimedia.org/wikipedia/commons/e/ee/Nintendo-Super-Famicom-Set-FL.jpg",
-                          ViewCount = 0
-                      }
-                );
-            }
-
-            #endregion
-
-            _context.SaveChanges();
         }
 
         private async Task SeedIdentityServerAsync()

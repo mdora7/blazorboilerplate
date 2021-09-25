@@ -795,3 +795,48 @@ div.refresh-timer-interval-wrapper {
 .product-card-clean-margin {
     margin: 0px;
 }
+
+
+
+.media-img-wrapper {
+    width: 200px;
+    height: 200px;
+    text-align: center;
+}
+
+.media-img-big-wrapper {
+    width: 500px;
+    height: 500px;
+    text-align: center;
+}
+
+.media-img:hover {
+    transform: scale(1.1);
+}
+
+.media-img:hover {
+    transform: scale(1.1);
+}
+
+.views {
+    font-size: 12px;
+    color: gray;
+    text-align: right;
+}
+
+
+@media (max-width: 1023.98px) {
+    .media {
+        flex-direction: column;
+    }
+
+    .media-img-big-wrapper, .media-img-wrapper {
+        width: 100%;
+        height: auto;
+        text-align: center;
+    }
+
+    .media-img-big {
+        max-width: 300px;
+    }
+}

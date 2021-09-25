@@ -36,14 +36,17 @@ namespace BlazorBoilerplate.Shared.Services.BBShop
         #endregion
 
         #region products
-        public async Task<Breeze.Sharp.QueryResult<Product>> LoadProducts(int? take = null, int? skip = null)
+        public async Task<Breeze.Sharp.QueryResult<Product>> LoadProducts(Dictionary<string, object> parameters
+                                                                        , int? take = null
+                                                                        , int? skip = null)
         {
             return await GetItems<Product>(from: "Products"
                                             , orderByDescending: null
                                             , take: take
                                             , skip: skip
-                                            , parameters: null);
+                                            , parameters: parameters);
         }
+
         #endregion
     }
 }
