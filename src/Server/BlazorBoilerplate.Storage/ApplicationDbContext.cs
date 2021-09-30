@@ -96,8 +96,8 @@ namespace BlazorBoilerplate.Storage
                 b.Property(b => b.Image).HasDefaultValue(Constants.ShopConsts.NoProfilePicture);
                 b.HasMany(b => b.Variants)
                     .WithOne(e => e.Product)
-                    .HasForeignKey(f => f.ProductId)
-                    .IsRequired();
+                    .HasForeignKey(f => f.ProductId);
+                    //.IsRequired();
                 b.ToTable("Products");
             });
             modelBuilder.Entity<ProductVariant>().ToTable("ProductVariants").HasKey(t=> new { t.ProductId, t.EditionId });

@@ -1,8 +1,12 @@
 ﻿@page "/cartdetail"
-@page "/cartdetail/{productid:int}"
+@page "/cartdetail/{productid:long}"
 
 @inject IShopClient shopClient
+@inject ILocalStorageService localStorage
+@inject IViewNotifier viewNotifier
 @inject IStringLocalizer<Global> L
+
+
 
 <TopSection>
     <Breadcrumbs>
@@ -18,50 +22,52 @@
 }
 else
 {
-    <MatPaper Outlined="true" Rounded="true">
-        <div class="ViewCount">
-            <i class="oi oi-eye"></i> @ViewCount
-        </div>
-        <div class="media">
-            <div class="media-img-big-wrapper mr-2">
-                <img class="media-img-big" src="@product.Image" alt="@product.Title" />
-            </div>
-            <div class="media-body">
-                tüm değerler elde edilebilir mssi?
-                <h2 class="mb-0">@product.Title</h2>
-                <p>@product.Description</p>
-                @* @if (product.Variants != null && product.Variants.Count > 1)
-                    {
-                    <div class="form-group">
-                    <select class="form-control" @bind="currentEditionId">
-                    @foreach (var variant in product.Variants)
-                    {
-                    <option value="@variant.EditionId">@variant.Edition.Name</option>
-                    }
-                    </select>
+    <div class="row">
+        <div class="col-sm-8 col-md-8 col-lg-8 offset-2">
+            <MatPaper Outlined="true" Rounded="true">
+                <div class="ViewCount">
+                    <i class="oi oi-eye"></i> @ViewCount
+                </div>
+                <div class="media">
+                    <div class="media-img-big-wrapper mr-2">
+                        <img class="media-img-big" src="@product.Image" alt="@product.Title" />
                     </div>
-                    }
-                    @if (GetSelectedVariant() != null)
-                    {
-                    @if (GetSelectedVariant().OriginalPrice > GetSelectedVariant().Price)
-                    {
-                    <h6 class="text-muted original-price">$@GetSelectedVariant().OriginalPrice</h6>
-                    }
-                    <h4 class="price">
-                    $@GetSelectedVariant().Price
-                    </h4>
-                    }*@
-                @*<EditForm Model="cartItem">
-                    <div class="form-group">
-                    <InputNumber id="quantity" @bind-Value="cartItem.Quantity" class="form-control" style="width: 70px;" />
+                    <div class="media-body">
+                        <h2 class="mb-0">@product.Title</h2>
+                        <p>@product.Description</p>
+                        @if (product.Variants != null && product.Variants.Count > 1)
+                        {
+                            <div class="form-group">
+                                <select class="form-control" @bind="currentEditionId">
+                                    @foreach (var variant in product.Variants)
+                                    {
+                                        <option value="@variant.EditionId">@variant.Edition?.Name</option>
+                                    }
+                                </select>
+                            </div>
+                        }
+                        @if (GetSelectedVariant() != null)
+                        {
+                            @if (GetSelectedVariant().OriginalPrice > GetSelectedVariant().Price)
+                            {
+                                <h6 class="text-muted original-price">$@GetSelectedVariant().OriginalPrice</h6>
+                            }
+                            <h4 class="price">
+                                $@GetSelectedVariant().Price
+                            </h4>
+                        }
+                        <EditForm Model="cartItem">
+                            <div class="form-group">
+                                <InputNumber id="quantity" @bind-Value="cartItem.Quantity" class="form-control" style="width: 70px;" />
+                            </div>
+                        </EditForm>
+                        <button class="btn btn-primary" @onclick="AddToCart"><i class="oi oi-cart"></i>&nbsp;&nbsp;&nbsp;Add to Cart</button>
                     </div>
-                    </EditForm>*@
-                @*<button class="btn btn-primary" @onclick="AddToCart"><i class="oi oi-cart"></i>&nbsp;&nbsp;&nbsp;Add to Cart</button>*@
-            </div>
 
+                </div>
+            </MatPaper>
         </div>
-    </MatPaper>
-
+    </div>
 
 }
 
@@ -71,27 +77,84 @@ else
     string ViewCount;
 
     [Parameter]
-    public int productid { get; set; }
+    public long productid { get; set; }
 
     private Product product = null;
+    private CartItem cartItem = new CartItem { Quantity = 1 };
+
+    private long currentEditionId = 1;
 
     protected override async Task OnInitializedAsync()
     {
-        var param = new Dictionary<string, object>()
-    {
-        {"Id",  productid}
-    };
+        this.product = await GetProduct(productid);
 
-        var productList = await shopClient.LoadProducts(param);
-        product = new List<Product>(productList).First();
-
-
+        if (product.Variants.Count > 0)
+        {
+            currentEditionId = product.Variants[0].EditionId;
+        }
     }
 
     protected override async Task OnParametersSetAsync()
     {
         await ViewCountPlaceholder();
     }
+
+
+    private ProductVariant GetSelectedVariant()
+    {
+        var variant = product.Variants.FirstOrDefault(v => v.EditionId == currentEditionId);
+        return variant;
+    }
+
+    private async Task<Product> GetProduct(long productIdParam)
+    {
+        var param = new Dictionary<string, object>()
+        {
+            {"Id",  productIdParam}
+        };
+
+        var productList = await shopClient.LoadProducts(param);
+        return new List<Product>(productList).First();
+    }
+
+    private async Task AddToCart()
+    {
+        var productVariant = GetSelectedVariant();
+
+        cartItem.EditionId = Convert.ToInt32(productVariant.EditionId);
+        cartItem.EditionName = productVariant.Edition.Name;
+        cartItem.Image = product.Image;
+        cartItem.Price = productVariant.Price;
+        cartItem.ProductId = Convert.ToInt32(productVariant.ProductId);
+        cartItem.ProductTitle = product.Title;
+
+        await this.AddToCart(cartItem);
+    }
+
+
+    public async Task AddToCart(CartItem item)
+        {
+            var cart = await localStorage.GetItemAsync<List<CartItem>>("cart");
+            if (cart == null)
+            {
+                cart = new List<CartItem>();
+            }
+
+            var sameItem = cart.Find(x => x.ProductId == item.ProductId && x.EditionId == item.EditionId);
+            if (sameItem == null)
+            {
+                cart.Add(item);
+            }
+            else
+            {
+                sameItem.Quantity += item.Quantity;
+            }
+
+            await localStorage.SetItemAsync("cart", cart);
+
+            var product = await GetProduct(item.ProductId);
+            viewNotifier.Show($"{product.Title} added to cart", ViewNotifierType.Success, L["Operation Successful"]);
+        }
 
     async Task ViewCountPlaceholder() => await Task.Run(() =>
     {

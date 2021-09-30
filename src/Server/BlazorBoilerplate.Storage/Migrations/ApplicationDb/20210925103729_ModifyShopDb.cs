@@ -11,7 +11,7 @@ namespace BlazorBoilerplate.Storage.Migrations.ApplicationDb
                 name: "ProductEditions",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedOn = table.Column<DateTime>(type: "datetime2(7)", nullable: false),
@@ -41,9 +41,9 @@ namespace BlazorBoilerplate.Storage.Migrations.ApplicationDb
                 name: "ProductStats",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Visits = table.Column<int>(type: "int", nullable: false),
+                    Visits = table.Column<long>(type: "bigint", nullable: false),
                     LastVisit = table.Column<DateTime>(type: "datetime2", nullable: true),
                     CreatedOn = table.Column<DateTime>(type: "datetime2(7)", nullable: false),
                     ModifiedOn = table.Column<DateTime>(type: "datetime2(7)", nullable: true),
@@ -72,11 +72,10 @@ namespace BlazorBoilerplate.Storage.Migrations.ApplicationDb
                 name: "ProductVariants",
                 columns: table => new
                 {
-                    ProductId = table.Column<int>(type: "int", nullable: false),
-                    EditionId = table.Column<int>(type: "int", nullable: false),
+                    ProductId = table.Column<long>(type: "bigint", nullable: false),
+                    EditionId = table.Column<long>(type: "bigint", nullable: false),
                     Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     OriginalPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    ProductId1 = table.Column<long>(type: "bigint", nullable: true),
                     CreatedOn = table.Column<DateTime>(type: "datetime2(7)", nullable: false),
                     ModifiedOn = table.Column<DateTime>(type: "datetime2(7)", nullable: true),
                     CreatedById = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
@@ -104,12 +103,6 @@ namespace BlazorBoilerplate.Storage.Migrations.ApplicationDb
                         principalTable: "ProductEditions",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_ProductVariants_Products_ProductId1",
-                        column: x => x.ProductId1,
-                        principalTable: "Products",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
@@ -147,10 +140,6 @@ namespace BlazorBoilerplate.Storage.Migrations.ApplicationDb
                 table: "ProductVariants",
                 column: "ModifiedById");
 
-            migrationBuilder.CreateIndex(
-                name: "IX_ProductVariants_ProductId1",
-                table: "ProductVariants",
-                column: "ProductId1");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

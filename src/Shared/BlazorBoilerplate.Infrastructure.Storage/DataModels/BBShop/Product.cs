@@ -7,6 +7,8 @@ using System.Text;
 using System.Threading.Tasks;
 using BlazorBoilerplate.Infrastructure.Storage.DataInterfaces;
 
+using ProductVariant = BlazorBoilerplate.Infrastructure.Storage.DataModels.ProductVariant;
+
 namespace BlazorBoilerplate.Infrastructure.Storage.DataModels
 {
     public partial class Product : IAuditable, ISoftDelete
@@ -26,6 +28,6 @@ namespace BlazorBoilerplate.Infrastructure.Storage.DataModels
 
         public long ViewCount { get; set; }
 
-        public virtual ICollection<ProductVariant> Variants { get; set; }
+        public virtual ICollection<ProductVariant> Variants { get; set; }    
     }
 }

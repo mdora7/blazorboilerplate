@@ -3,6 +3,7 @@ using BlazorBoilerplate.Shared.Models;
 using BlazorBoilerplate.Theme.Material.Demo.Shared.Components;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using Microsoft.Extensions.DependencyInjection;
+using Blazored.LocalStorage;
 
 namespace BlazorBoilerplate.Theme.Material.Demo
 {
@@ -18,6 +19,14 @@ namespace BlazorBoilerplate.Theme.Material.Demo
             services.AddSingleton<IDynamicComponent, Footer>();
             services.AddSingleton<IDynamicComponent, DrawerFooter>();
             services.AddSingleton<IDynamicComponent, TopRightBarSection>();
+
+            #region Local browser storage
+            services.AddBlazoredLocalStorage(conf=>
+            {
+                conf.JsonSerializerOptions.PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase;
+                conf.JsonSerializerOptions.WriteIndented = false;
+            });
+            #endregion
         }
 
         public override void ConfigureServices(IServiceCollection services)

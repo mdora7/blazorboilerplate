@@ -361,9 +361,9 @@ namespace BlazorBoilerplate.Storage.Migrations.ApplicationDb
 
             modelBuilder.Entity("BlazorBoilerplate.Infrastructure.Storage.DataModels.ProductEdition", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<Guid?>("CreatedById")
@@ -432,11 +432,11 @@ namespace BlazorBoilerplate.Storage.Migrations.ApplicationDb
 
             modelBuilder.Entity("BlazorBoilerplate.Infrastructure.Storage.DataModels.ProductVariant", b =>
                 {
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
+                    b.Property<long>("ProductId")
+                        .HasColumnType("bigint");
 
-                    b.Property<int>("EditionId")
-                        .HasColumnType("int");
+                    b.Property<long>("EditionId")
+                        .HasColumnType("bigint");
 
                     b.Property<Guid?>("CreatedById")
                         .HasColumnType("uniqueidentifier");
@@ -459,9 +459,6 @@ namespace BlazorBoilerplate.Storage.Migrations.ApplicationDb
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<long?>("ProductId1")
-                        .HasColumnType("bigint");
-
                     b.HasKey("ProductId", "EditionId");
 
                     b.HasIndex("CreatedById");
@@ -469,8 +466,6 @@ namespace BlazorBoilerplate.Storage.Migrations.ApplicationDb
                     b.HasIndex("EditionId");
 
                     b.HasIndex("ModifiedById");
-
-                    b.HasIndex("ProductId1");
 
                     b.ToTable("ProductVariants");
                 });
@@ -808,8 +803,10 @@ namespace BlazorBoilerplate.Storage.Migrations.ApplicationDb
                         .HasForeignKey("ModifiedById");
 
                     b.HasOne("BlazorBoilerplate.Infrastructure.Storage.DataModels.Product", "Product")
-                        .WithMany()
-                        .HasForeignKey("ProductId1");
+                        .WithMany("Variants")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("CreatedBy");
 
@@ -896,6 +893,11 @@ namespace BlazorBoilerplate.Storage.Migrations.ApplicationDb
                     b.Navigation("Profile");
 
                     b.Navigation("UserRoles");
+                });
+
+            modelBuilder.Entity("BlazorBoilerplate.Infrastructure.Storage.DataModels.Product", b =>
+                {
+                    b.Navigation("Variants");
                 });
 #pragma warning restore 612, 618
         }
